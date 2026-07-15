@@ -6,7 +6,7 @@ import time
 from datetime import datetime, UTC
 
 #Temp folder handling
-BASE_TEMP_DIR = tempfile.gettempdir() 
+BASE_TEMP_DIR = r"C:\tmp"
 LANDING_DIR = os.path.join(BASE_TEMP_DIR, "analytics", "landing")
 DB_PATH = os.path.join(BASE_TEMP_DIR, "analytics", "warehouse.db")
 
@@ -33,7 +33,7 @@ def generate_clickstream_event():
         "event_id": f"evt_{random.randint(1000000, 9999999)}",
         "timestamp": datetime.now(UTC).isoformat(),
         "event_name": event_type,
-        "user":{
+        "user_context":{
             "user_id": user_id,
             "Session_id": session_id,
             "device": random.choice(DEVICES)
@@ -71,6 +71,7 @@ def simulate_stream(batch_size=20):
             f.write(json.dumps(event) + "\n")
     
     print(f"SUCCESS, Dropped {len(events_batch)} raw events into landing: {filename}")
+    print(f"Base Directory: {BASE_TEMP_DIR}")
 
 if __name__ == "__main__":
     print("Starting streaming event simulation, press Ctrl + C to stop.")

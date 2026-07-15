@@ -32,7 +32,17 @@ def run_ingestion_pipeline():
                 event_properties.product_id::VARCHAR AS product_id,
                 event_properties.value::DOUBLE AS event_value,
                 current_timestamp AS ingested_at
-            FROM read_json_auto('{json_files_pattern}')
+            FROM read_json_auto(
+                '{json_files_pattern}',
+                union_by_name=True,
+                columns={{
+                    event_id: 'VARCHAR',
+                    timestamp: 'VARCHAR',
+                    event_name: 'VARCHAR',
+                    user_context: 'STRUCT(user_id VARCHAR, session_id VARCHAR, device VARCHAR, ip_address VARCHAR)',
+                    event_properties: 'STRUCT(product_id VARCHAR, product_name VARCHAR, value DOUBLE, currency VARCHAR)'
+                }}
+            )
         ),
         deduplicated AS (
             SELECT *,
