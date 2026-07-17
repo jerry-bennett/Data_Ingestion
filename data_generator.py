@@ -19,7 +19,7 @@ EVENTS = ["page_view", "product_view", "add_to_cart", "purchase"]
 DEVICES = ["dektop", "mobile", "tablet"]
 PRODUCTS = [
     {"id": "P101", "name": "Mechanical Keyboard", "price": 120.00},
-    {"id": "P102", "name": "Ergonomic Mouse", "price": "85.50"},
+    {"id": "P102", "name": "Ergonomic Mouse", "price": 85.50},
     {"id": "P103", "name": "4K Monitor", "price": 349.99}
 ]
 
@@ -35,7 +35,7 @@ def generate_clickstream_event():
         "event_name": event_type,
         "user_context":{
             "user_id": user_id,
-            "Session_id": session_id,
+            "session_id": session_id,
             "device": random.choice(DEVICES)
         },
         "event_properties": {}

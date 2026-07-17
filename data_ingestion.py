@@ -1,8 +1,8 @@
 import os
 import duckdb
 
-LANDING_DIR = "/tmp/analytics/landing"
-DB_PATH = "/tmp/analytics/warehouse.db"
+LANDING_DIR = r"C:\tmp\analytics\landing"
+DB_PATH = r"C:\tmp\analytics\warehouse.db"
 
 def run_ingestion_pipeline():
     con = duckdb.connect(DB_PATH)
@@ -30,7 +30,7 @@ def run_ingestion_pipeline():
                 user_context.session_id::VARCHAR AS session_id,
                 user_context.device::VARCHAR AS device,
                 event_properties.product_id::VARCHAR AS product_id,
-                event_properties.value::DOUBLE AS event_value,
+                event_properties.product_price::DOUBLE AS product_price,
                 current_timestamp AS ingested_at
             FROM read_json_auto(
                 '{json_files_pattern}',
@@ -40,7 +40,8 @@ def run_ingestion_pipeline():
                     timestamp: 'VARCHAR',
                     event_name: 'VARCHAR',
                     user_context: 'STRUCT(user_id VARCHAR, session_id VARCHAR, device VARCHAR, ip_address VARCHAR)',
-                    event_properties: 'STRUCT(product_id VARCHAR, product_name VARCHAR, value DOUBLE, currency VARCHAR)'
+                    event_properties: 'STRUCT(product_id VARCHAR, product_name VARCHAR, product_price DOUBLE, currency VARCHAR)',
+
                 }}
             )
         ),
@@ -57,7 +58,7 @@ def run_ingestion_pipeline():
             session_id, 
             device, 
             product_id, 
-            event_value, 
+            product_price,
             ingested_at
         FROM deduplicated 
         WHERE rn = 1;
@@ -74,7 +75,7 @@ def run_ingestion_pipeline():
             session_id VARCHAR,
             device VARCHAR,
             product_id VARCHAR,
-            event_value DOUBLE,
+            product_price DOUBLE,
             ingested_at TIMESTAMP
         );
     """)
